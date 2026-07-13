@@ -65,7 +65,7 @@ def notReducibleA : Atom := Atom.sym "NotReducible"
 def emptyA : Atom := Atom.sym "Empty"
 
 /-- Build `(Error <atom> <message>)` with the message as a symbol (matching the interpreter ops). -/
-def errAtom (a : Atom) (msg : String) : Atom := Atom.expr [Atom.sym "Error", a, Atom.gnd (Ground.str msg)]
+def errAtom (a : Atom) (msg : String) : Atom := Atom.expr [Atom.sym "Error", a, Atom.sym msg]
 
 /-- Runtime message for malformed primitive `unify` applications. -/
 def unifyBadArityMessage : Atom → String
