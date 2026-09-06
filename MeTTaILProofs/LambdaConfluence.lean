@@ -280,17 +280,17 @@ open Relation
 /-- Reduction under `lam` lifts to the reflexive-transitive closure. -/
 theorem reflTransGen_step_lam {ty : Ty} {b b' : Tm} (h : ReflTransGen Step b b') :
     ReflTransGen Step (.lam ty b) (.lam ty b') :=
-  ReflTransGen.lift (Tm.lam ty) (fun _ _ hs => Step.lam hs) h
+  ReflTransGen.lift (Tm.lam ty) (fun _ _ hs => Step.lam hs) _ _ h
 
 /-- Reduction on the left of an application lifts to the closure. -/
 theorem reflTransGen_step_appL {f f' a : Tm} (h : ReflTransGen Step f f') :
     ReflTransGen Step (.app f a) (.app f' a) :=
-  ReflTransGen.lift (fun x => Tm.app x a) (fun _ _ hs => Step.appL hs) h
+  ReflTransGen.lift (fun x => Tm.app x a) (fun _ _ hs => Step.appL hs) _ _ h
 
 /-- Reduction on the right of an application lifts to the closure. -/
 theorem reflTransGen_step_appR {f a a' : Tm} (h : ReflTransGen Step a a') :
     ReflTransGen Step (.app f a) (.app f a') :=
-  ReflTransGen.lift (fun x => Tm.app f x) (fun _ _ hs => Step.appR hs) h
+  ReflTransGen.lift (fun x => Tm.app f x) (fun _ _ hs => Step.appR hs) _ _ h
 
 /-- Reduction on both sides of an application lifts to the closure, by composing the two one-sided
     lifts. -/
@@ -324,8 +324,8 @@ theorem reflTransGen_step_eq_par : ReflTransGen Step = ReflTransGen ParRed := by
   funext a b
   apply propext
   constructor
-  · exact fun h => h.mono (fun _ _ => step_to_par)
-  · exact fun h => reflTransGen_closed (fun _ _ => par_to_redstep) h
+  · exact fun h => ReflTransGen.mono (fun _ _ hs => step_to_par hs) _ _ h
+  · exact fun h => reflTransGen_closed (fun _ _ => par_to_redstep) _ _ h
 
 /-- **Confluence (Church-Rosser) of beta reduction** for the lambda calculus (no typing hypothesis, so
     it holds for well-typed and ill-typed terms alike). If a term

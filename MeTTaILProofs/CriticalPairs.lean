@@ -292,7 +292,7 @@ theorem rstep_context_gen {R : List (FOTerm × FOTerm)} {t : FOTerm} {p : Pos} {
 theorem rstepMany_context {R : List (FOTerm × FOTerm)} {t : FOTerm} {p : Pos} {s s' : FOTerm}
     (h : subAt t p = some s) (hsteps : Relation.ReflTransGen (Rstep R) s s') :
     Relation.ReflTransGen (Rstep R) (repAt t p s) (repAt t p s') :=
-  Relation.ReflTransGen.lift (repAt t p ·) (fun _ _ hst => rstep_context_gen h hst) hsteps
+  Relation.ReflTransGen.lift (repAt t p ·) (fun _ _ hst => rstep_context_gen h hst) _ _ hsteps
 
 /-! ### Reducing every copy of a variable
 

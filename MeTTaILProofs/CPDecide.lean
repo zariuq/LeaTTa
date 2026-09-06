@@ -67,7 +67,7 @@ theorem rstep_subst {R : List (FOTerm × FOTerm)} (ρ : Nat → FOTerm) {s s' : 
 theorem rstepMany_subst {R : List (FOTerm × FOTerm)} (ρ : Nat → FOTerm) {s s' : FOTerm}
     (h : Relation.ReflTransGen (Rstep R) s s') :
     Relation.ReflTransGen (Rstep R) (subst ρ s) (subst ρ s') :=
-  Relation.ReflTransGen.lift (subst ρ) (fun _ _ hab => rstep_subst ρ hab) h
+  Relation.ReflTransGen.lift (subst ρ) (fun _ _ hab => rstep_subst ρ hab) _ _ h
 
 /-- Joinability is closed under substitution. -/
 theorem joinable_subst {R : List (FOTerm × FOTerm)} (ρ : Nat → FOTerm) {a b : FOTerm}

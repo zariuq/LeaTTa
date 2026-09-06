@@ -59,7 +59,7 @@ theorem reflTransGen_eq_of_squeeze {r1 r2 : α → α → Prop}
     | refl => exact .refl
     | tail _ hstep ih => exact ih.trans (h21 _ _ hstep)
   · intro h
-    exact h.mono (fun _ _ hab => h12 _ _ hab)
+    exact ReflTransGen.mono (fun _ _ hab => h12 _ _ hab) _ _ h
 
 /-- Joinability transfers across relations with equal reflexive-transitive closures. -/
 theorem joinable_of_reflTransGen_eq {r1 r2 : α → α → Prop}
@@ -95,19 +95,19 @@ to show a congruence step (which reduces a subterm and rebuilds the context) is 
 theorem rewStepMany_arg (p : Presentation) {l : Label} {pre post : List AST} {a a' : AST}
     (h : ReflTransGen (RewStep p) a a') :
     ReflTransGen (RewStep p) (.sexp l (pre ++ a :: post)) (.sexp l (pre ++ a' :: post)) :=
-  ReflTransGen.lift (fun x => AST.sexp l (pre ++ x :: post)) (fun _ _ hst => RewStep.arg hst) h
+  ReflTransGen.lift (fun x => AST.sexp l (pre ++ x :: post)) (fun _ _ hst => RewStep.arg hst) _ _ h
 
 /-- A reduction sequence lifts under the body of a `Subst` context. -/
 theorem rewStepMany_substB (p : Presentation) {r : AST} {v : DottedPath} {b b' : AST}
     (h : ReflTransGen (RewStep p) b b') :
     ReflTransGen (RewStep p) (.subst b r v) (.subst b' r v) :=
-  ReflTransGen.lift (fun x => AST.subst x r v) (fun _ _ hst => RewStep.substB hst) h
+  ReflTransGen.lift (fun x => AST.subst x r v) (fun _ _ hst => RewStep.substB hst) _ _ h
 
 /-- A reduction sequence lifts under the replacement of a `Subst` context. -/
 theorem rewStepMany_substR (p : Presentation) {b : AST} {v : DottedPath} {r r' : AST}
     (h : ReflTransGen (RewStep p) r r') :
     ReflTransGen (RewStep p) (.subst b r v) (.subst b r' v) :=
-  ReflTransGen.lift (fun x => AST.subst b x v) (fun _ _ hst => RewStep.substR hst) h
+  ReflTransGen.lift (fun x => AST.subst b x v) (fun _ _ hst => RewStep.substR hst) _ _ h
 
 /-- A semantic congruence premise lifts to the matching `sexp` argument context. -/
 theorem sexpArgCong_squeeze_of_inner {base : Presentation} {lab : Label}

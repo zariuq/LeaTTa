@@ -73,7 +73,7 @@ theorem CRstepN_le_succ (R : List CRule) :
   | k + 1 => fun h => by
       obtain ⟨p, rule, σ, hmem, hsub, hconds, heq⟩ := h
       exact ⟨p, rule, σ, hmem, hsub,
-        fun c hc => (hconds c hc).mono (fun _ _ hab => CRstepN_le_succ R k hab), heq⟩
+        fun c hc => Relation.ReflTransGen.mono (fun _ _ hab => CRstepN_le_succ R k hab) _ _ (hconds c hc), heq⟩
 
 /-- A step at level `m` is a step at any higher level `n`. -/
 theorem CRstepN_mono (R : List CRule) {m n : Nat} (hmn : m ≤ n) {t t' : FOTerm}
@@ -85,7 +85,7 @@ theorem CRstepN_mono (R : List CRule) {m n : Nat} (hmn : m ≤ n) {t t' : FOTerm
 /-- A reduction sequence at level `m` is a reduction sequence at any higher level. -/
 theorem crstepN_many_mono (R : List CRule) {m n : Nat} (hmn : m ≤ n) {t t' : FOTerm}
     (h : Relation.ReflTransGen (CRstepN R m) t t') : Relation.ReflTransGen (CRstepN R n) t t' :=
-  h.mono (fun _ _ hab => CRstepN_mono R hmn hab)
+  Relation.ReflTransGen.mono (fun _ _ hab => CRstepN_mono R hmn hab) _ _ h
 
 /-- Any level-`n` step is a conditional step. -/
 theorem crstep_of_levelN (R : List CRule) {n : Nat} {t t' : FOTerm} (h : CRstepN R n t t') :
@@ -94,7 +94,7 @@ theorem crstep_of_levelN (R : List CRule) {n : Nat} {t t' : FOTerm} (h : CRstepN
 /-- A level-`n` reduction sequence is a conditional reduction sequence. -/
 theorem crstepMany_of_levelN (R : List CRule) {n : Nat} {t t' : FOTerm}
     (h : Relation.ReflTransGen (CRstepN R n) t t') : Relation.ReflTransGen (CRstep R) t t' :=
-  h.mono (fun _ _ hab => crstep_of_levelN R hab)
+  Relation.ReflTransGen.mono (fun _ _ hab => crstep_of_levelN R hab) _ _ h
 
 /-! ### Context congruence
 
@@ -130,7 +130,7 @@ theorem crstep_context_gen (R : List CRule) {t : FOTerm} {p : Pos} {s a a' : FOT
 theorem crstepMany_context (R : List CRule) {t : FOTerm} {p : Pos} {s s' : FOTerm}
     (h : subAt t p = some s) (hsteps : Relation.ReflTransGen (CRstep R) s s') :
     Relation.ReflTransGen (CRstep R) (repAt t p s) (repAt t p s') :=
-  Relation.ReflTransGen.lift (repAt t p ·) (fun _ _ hst => crstep_context_gen R h hst) hsteps
+  Relation.ReflTransGen.lift (repAt t p ·) (fun _ _ hst => crstep_context_gen R h hst) _ _ hsteps
 
 /-! ### Bounding the level of a reduction, and firing a rule
 

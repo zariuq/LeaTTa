@@ -11,11 +11,11 @@ package «MettaHyperonFull» where
 
 -- Mathlib backs the *metatheory layer only* (Multiset, Relation.ReflTransGen, order and
 -- decidability infrastructure, aesop). Pinned to the release whose toolchain matches ours
--- (leanprover/lean4:v4.31.0). The executable kernel deliberately does not import it:
+-- (leanprover/lean4:v4.33.1). The executable kernel deliberately does not import it:
 -- Multiset/Finset/Real are noncomputable, so the interpreter that must `lake exe` stays on
 -- List / Std.HashMap. This split is about computability, not dependency purity.
 require mathlib from git
-  "https://github.com/leanprover-community/mathlib4.git" @ "v4.31.0"
+  "https://github.com/leanprover-community/mathlib4.git" @ "0df444a360eaa60ab8c11dca51a86af692955474"
 
 @[default_target]
 lean_lib «MettaHyperonFull» where
