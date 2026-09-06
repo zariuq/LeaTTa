@@ -37,10 +37,8 @@ namespace Atom
 handle the four constructors, and in the `expr` case assume `motive` for each immediate
 sub-atom. Tagged `@[induction_eliminator]`, so `induction a` uses it. Terminates because every
 sub-atom is strictly smaller in `Atom.size` (`_ha : a ∈ xs` is used in `decreasing_by`). -/
--- `nolint defLemma`: although `motive`-valued, `recAux` is an *eliminator* (tagged
--- `induction_eliminator`), so `def` rather than `theorem` is the correct form here.
-@[elab_as_elim, induction_eliminator, nolint defLemma]
-def recAux {motive : Atom → Prop}
+@[elab_as_elim, induction_eliminator]
+theorem recAux {motive : Atom → Prop}
     (sym : ∀ s, motive (Atom.sym s))
     (var : ∀ v, motive (Atom.var v))
     (gnd : ∀ g, motive (Atom.gnd g))

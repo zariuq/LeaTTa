@@ -202,13 +202,11 @@ def composeMonad : Monad C where
     have S5 := S.μ.naturality (l.δ.app ((T : C ⥤ C).obj ((T : C ⥤ C).obj X)))
     have R2 := (S.μ.naturality ((T : C ⥤ C).map (l.δ.app ((T : C ⥤ C).obj X)))).symm
     have R4 := S.μ.naturality (T.μ.app ((T : C ⥤ C).obj X))
-    erw [Category.assoc, Category.assoc]
-    erw [reassoc_of% S1, Category.assoc, reassoc_of% S2]
-    erw [reassoc_of% S3, Category.assoc, Category.assoc, reassoc_of% S4]
-    erw [Category.assoc, reassoc_of% S5, S6]
-    erw [reassoc_of% R1, Category.assoc, reassoc_of% R2]
-    erw [reassoc_of% R3, Category.assoc, Category.assoc, reassoc_of% R4]
-    rfl
+    erw [reassoc_of% S1, reassoc_of% S2]
+    erw [reassoc_of% S3, reassoc_of% S4]
+    erw [reassoc_of% S5, S6]
+    erw [reassoc_of% R1, reassoc_of% R2]
+    erw [reassoc_of% R3, reassoc_of% R4]
   left_unit := by
     intro X
     simp only [composeμ, composeη, NatTrans.comp_app, whiskerLeft_app, whiskerRight_app,

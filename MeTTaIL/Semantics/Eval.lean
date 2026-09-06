@@ -69,4 +69,17 @@ theorem eval_fixed_of_normal (p : Presentation) (t : AST) (h : IsNormal p t) (fu
   simp only [IsNormal] at h
   simp only [eval, h]
 
+/-- Splitting the fuel preserves the normalizer's result, including early termination. -/
+theorem eval_add (p : Presentation) (first second : Nat) (t : AST) :
+    eval p (first + second) t = eval p second (eval p first t) := by
+  induction first generalizing t with
+  | zero => simp only [Nat.zero_add, eval]
+  | succ first ih =>
+      simp only [Nat.succ_add, eval]
+      cases h : oneStep p t with
+      | none =>
+          cases second <;> simp only [eval, h]
+      | some next =>
+          simpa only [h] using ih next
+
 end MeTTaIL

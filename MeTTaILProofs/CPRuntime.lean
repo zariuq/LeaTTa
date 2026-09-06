@@ -418,7 +418,7 @@ theorem RstepMany_to_RewStep (hν : Function.Injective ν) {R : List (FOTerm × 
     (hvars : ∀ l r, (l, r) ∈ R → ∀ n ∈ r.varsOf, n ∈ l.varsOf) {s s' : FOTerm}
     (h : Relation.ReflTransGen (Rstep R) s s') :
     Relation.ReflTransGen (RewStep (embPres ν R)) (emb ν s) (emb ν s') :=
-  Relation.ReflTransGen.lift (emb ν) (fun _ _ hab => Rstep_to_RewStep ν hν hvars hab) h
+  Relation.ReflTransGen.lift (emb ν) (fun _ _ hab => Rstep_to_RewStep ν hν hvars hab) _ _ h
 
 /-- Backward simulation lifted to many steps: a runtime reduction sequence out of an embedded term stays in
     the embedded fragment and comes from a first-order reduction sequence. -/

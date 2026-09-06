@@ -224,7 +224,7 @@ closure of `Step` is Church-Rosser. -/
 /-- A many-step `Step` reduction is a many-step `ParRed` reduction (since `Step ⊆ ParRed`). -/
 theorem reducesMany_toParRedStar {a b : CL} (h : ReducesMany a b) :
     ReflTransGen ParRed a b :=
-  ReflTransGen.mono (fun _ _ hs => ParRed.ofStep hs) h
+  ReflTransGen.mono (fun _ _ hs => ParRed.ofStep hs) _ _ h
 
 /-- A many-step `ParRed` reduction is a many-step `Step` reduction (since each parallel step is a
     finite sequence of single steps). -/
