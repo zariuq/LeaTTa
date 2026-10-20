@@ -9,6 +9,9 @@ package «MettaHyperonFull» where
   keywords := #["MeTTa", "Hyperon", "formal semantics", "metatheory", "verified interpreter"]
   leanOptions := #[⟨`autoImplicit, false⟩, ⟨`relaxedAutoImplicit, false⟩]
 
+-- Independent atom syntax shared with the specification clients.
+require mettail_core from "../../batteries/mettail-core"
+
 -- Mathlib backs the *metatheory layer only* (Multiset, Relation.ReflTransGen, order and
 -- decidability infrastructure, aesop). Pinned to the release whose toolchain matches ours
 -- (leanprover/lean4:v4.33.1). The executable kernel deliberately does not import it:
