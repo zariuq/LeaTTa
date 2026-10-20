@@ -199,6 +199,107 @@ theorem addVarEquality_conflict {b : Bindings} {x y : VarName}
 /-- Merging an empty right-hand binding set is the identity singleton. -/
 theorem merge_empty_right (b : Bindings) : merge b [] = [b] := rfl
 
+/-- Replaying an explicit alias does not duplicate its stored edge. -/
+theorem addEqRaw_of_mem (b : Bindings) (x y : VarName)
+    (present : BindingRel.eq x y ∈ b) : addEqRaw b x y = b := by
+  have found : b.any (fun r => match r with
+      | BindingRel.eq left right => left == x && right == y
+      | _ => false) = true :=
+    List.any_eq_true.mpr ⟨BindingRel.eq x y, present, by simp⟩
+  unfold addEqRaw
+  split
+  · rfl
+  · exact if_pos found
+
+/-- A non-reflexive alias absent from the binding set is prepended exactly once. -/
+theorem addEqRaw_of_not_mem (b : Bindings) (x y : VarName)
+    (different : x ≠ y) (absent : BindingRel.eq x y ∉ b) :
+    addEqRaw b x y = BindingRel.eq x y :: b := by
+  unfold addEqRaw
+  simp only [beq_eq_false_iff_ne.mpr different, Bool.false_eq_true, if_false]
+  split
+  · rename_i found
+    obtain ⟨edge, member, edgeMatch⟩ := List.any_eq_true.mp found
+    cases edge with
+    | val key value => simp at edgeMatch
+    | eq left right =>
+        have equal : left = x ∧ right = y := by simpa using edgeMatch
+        rcases equal with ⟨rfl, rfl⟩
+        exact False.elim (absent member)
+  · rfl
+
+/-- Raw alias insertion preserves every relation already present. -/
+theorem mem_addEqRaw_of_mem (b : Bindings) (x y : VarName)
+    {relation : BindingRel} (present : relation ∈ b) :
+    relation ∈ addEqRaw b x y := by
+  unfold addEqRaw
+  split
+  · exact present
+  · split
+    · exact present
+    · exact List.mem_cons_of_mem _ present
+
+/-- Adding an alias neither creates nor removes value relations. -/
+@[simp] theorem val_mem_addEqRaw_iff (b : Bindings) (x y key : VarName)
+    (value : Atom) :
+    BindingRel.val key value ∈ addEqRaw b x y ↔
+      BindingRel.val key value ∈ b := by
+  unfold addEqRaw
+  split
+  · rfl
+  · split
+    · rfl
+    · simp
+
+/-- Raw alias insertion leaves direct value lookup unchanged. -/
+@[simp] theorem lookupVal_addEqRaw (b : Bindings) (x y key : VarName) :
+    lookupVal (addEqRaw b x y) key = lookupVal b key := by
+  unfold addEqRaw
+  split
+  · rfl
+  · split <;> rfl
+
+/-- Duplicate suppression preserves exactly the non-reflexive relation set. -/
+theorem mem_addEqRaw_iff (b : Bindings) (x y : VarName) (different : x ≠ y)
+    (relation : BindingRel) :
+    relation ∈ addEqRaw b x y ↔ relation ∈ BindingRel.eq x y :: b := by
+  unfold addEqRaw
+  split
+  · rename_i same
+    exact False.elim (different (by simpa using same))
+  · split
+    · rename_i found
+      obtain ⟨edge, member, edgeMatch⟩ := List.any_eq_true.mp found
+      have present : BindingRel.eq x y ∈ b := by
+        cases edge with
+        | val key value => simp at edgeMatch
+        | eq left right =>
+            have equal : left = x ∧ right = y := by simpa using edgeMatch
+            rcases equal with ⟨rfl, rfl⟩
+            exact member
+      constructor
+      · exact List.mem_cons_of_mem _
+      · intro member
+        rcases List.mem_cons.mp member with equal | member
+        · exact equal ▸ present
+        · exact member
+    · rfl
+
+/-- Every non-reflexive alias is present after raw insertion, whether newly
+inserted or replayed. -/
+theorem eq_mem_addEqRaw (b : Bindings) (x y : VarName) (different : x ≠ y) :
+    BindingRel.eq x y ∈ addEqRaw b x y :=
+  (mem_addEqRaw_iff b x y different _).2 (by simp)
+
+/-- Alias insertion is idempotent for every input, including raw binding sets. -/
+theorem addEqRaw_idempotent (b : Bindings) (x y : VarName) :
+    addEqRaw (addEqRaw b x y) x y = addEqRaw b x y := by
+  by_cases same : x = y
+  · subst y
+    simp [addEqRaw]
+  · apply addEqRaw_of_mem
+    exact (mem_addEqRaw_iff b x y same _).mpr (by simp)
+
 end Bindings
 
 /-- Decomposing two variable-free atoms can produce no variable constraints. -/

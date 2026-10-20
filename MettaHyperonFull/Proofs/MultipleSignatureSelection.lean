@@ -307,12 +307,11 @@ private theorem multiSignature_interpret_a :
     interpretFuel multiSignatureEnv 1 St.init
       [{ stack := atomToStack (.expr [.sym "eval", .sym "a"]) [], bnd := [] }] [] =
       ([(notReducibleA, [])], St.init) := by
-  have hNotEmpty : (notReducibleA != emptyA) = true := by rfl
   simp [interpretFuel.eq_3, interpretFuel.eq_1, interpretStack1.eq_1,
     atomToStack, evalOp, queryOp, candidatesW, MinEnv.candidates, extractRules,
     instantiate_nil, multiSignatureEnv, multiSignatureAtoms, MinEnv.ofAtomsGT,
     St.init, World.empty, isEmbeddedOp, isVariableHeaded, headKey, finItem,
-    isFinal, finalPair, Std.HashMap.getD_emptyWithCapacity, hNotEmpty]
+    isFinal, Std.HashMap.getD_emptyWithCapacity]
   change ([(instantiate [] notReducibleA, ([] : Bindings))].filter
     (fun p => p.1 != emptyA)) = _
   rw [instantiate_nil]
@@ -350,13 +349,12 @@ private theorem multiSignature_reduce_application :
     interpretFuel multiSignatureEnv 2 St.init
       [{ stack := atomToStack (.expr [.sym "eval", applicationA]) [], bnd := [] }] [] =
       ([(notReducibleA, [])], St.init) := by
-  have hNotEmpty : (notReducibleA != emptyA) = true := by rfl
   simp [interpretFuel.eq_3, interpretFuel.eq_1, interpretStack1.eq_1,
     atomToStack, evalOp, queryOp, candidatesW, MinEnv.candidates, extractRules,
     instantiate_nil, applicationA, multiSignatureEnv, multiSignatureAtoms,
     MinEnv.ofAtomsGT, St.init, World.empty, isEmbeddedOp, isVariableHeaded,
-    headKey, finItem, isFinal, finalPair, callGrounded,
-    GroundingTable.lookup, Std.HashMap.getD_emptyWithCapacity, hNotEmpty]
+    headKey, finItem, isFinal, callGrounded,
+    GroundingTable.lookup, Std.HashMap.getD_emptyWithCapacity]
   change ([(instantiate [] notReducibleA, ([] : Bindings))].filter
     (fun p => p.1 != emptyA)) = _
   rw [instantiate_nil]
